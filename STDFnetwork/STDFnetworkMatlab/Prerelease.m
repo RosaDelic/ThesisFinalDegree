@@ -3,7 +3,7 @@ function [pRelAMPA, pRelNMDA, pRelGABA, pRel_stfAMPA, pRel_stfNMDA, pRel_stfGABA
     %pre: previous vector for the network field
     %fD_AMPA = fD_NMDA = fD_GABA: depression factor in the network
     %fF_AMPA = fF_NMDA = fF_GABA: facilitation factor in the network
-    tic
+    
     %--------------  Define synaptic parameters we'll need  ---------------
     tau_relAMPA = 400;
     tau_relNMDA = 400;

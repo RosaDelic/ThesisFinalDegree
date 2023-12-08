@@ -2,7 +2,15 @@ function [ti, wi, pRelAMPA, pRelNMDA, pRelGABA, pRel_stfAMPA, pRel_stfNMDA, pRel
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%  MAIN PROGRAM  ALL FUNCTIONS TOGETHER %%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    tic
+
+    %---------------------  Inputs  ---------------------
+    %Dnumber: Depression factor
+    %Fnumber: Facilitation factor
+    %t0: Initial time
+    %tf: Final time
+    %h: discretization in the rk45 method to solve network system
+
+    %tic
     disp('---------------------------------  STD - Network  ----------------------------------');
     
     %1. load BuildNetwork file which contains: 
@@ -36,19 +44,14 @@ function [ti, wi, pRelAMPA, pRelNMDA, pRelGABA, pRel_stfAMPA, pRel_stfNMDA, pRel
         %neq: number of equations for each neuron in the network
     
     
-    %Dnumber = 0.97;
     fD_AMPA = Dnumber;
     fD_NMDA = Dnumber;
     fD_GABA = Dnumber;
     
-    %Fnumber = 1.00;
     fF_AMPA = Fnumber;
     fF_NMDA = Fnumber;
     fF_GABA = Fnumber;
     
-    %t0 = 0;
-    %tf = 10000;
-    %h = 0.05;
     N = floor((tf-t0)/h)+1;
     sizenNeurons = size(ExcInh);
     nNeurons = sizenNeurons(2);
@@ -83,6 +86,7 @@ function [ti, wi, pRelAMPA, pRelNMDA, pRelGABA, pRel_stfAMPA, pRel_stfNMDA, pRel
     x0(excvd_positions) = (-60+5*excvd_random).*(1-ExcInh);
     x0(inhvs_positions) = (-60-5*inhvs_random).*ExcInh;
     
+    %4. Define the vectors for random parameters of the neuron
     SDvL = SDNumber(nNeurons);
     SDgL = SDNumber(nNeurons);
     SDgsd = SDNumber(nNeurons);
@@ -91,8 +95,9 @@ function [ti, wi, pRelAMPA, pRelNMDA, pRelGABA, pRel_stfAMPA, pRel_stfNMDA, pRel
     randomgL = (0.0667 + 0.0067*SDgL).*(1-ExcInh)+(0.1025 + 0.0025*SDgL).*ExcInh;
     randomgsd = ((1.75 + 0.1*SDgsd)*0.1).*(1-ExcInh);
     
+    %5. Execute rk45 to solve NetworkField
     [ti, wi, pRelAMPA, pRelNMDA, pRelGABA, pRel_stfAMPA, pRel_stfNMDA, pRel_stfGABA] = rk45Network('NetworkField', t0, tf, x0, N, h, neq, nNeurons, nvar, ExcInh, P, fD_AMPA, fD_NMDA, fD_GABA, fF_AMPA, fF_NMDA, fF_GABA, randomvL, randomgL, randomgsd);
-    toc
+    %toc
     
     %data_w = load('w_matrix.mat','wi_matrix');
     %save(filename,"ti", "data.wi", "pRelAMPA", "pRelNMDA", "pRelGABA", "pRel_stfAMPA", "pRel_stfNMDA", "pRel_stfGABA");

@@ -12,32 +12,32 @@ function [ti, wi, pRelAMPA, pRelNMDA, pRelGABA, pRel_stfAMPA, pRel_stfNMDA, pRel
 
     %------------------   Open files to save data at each iteration  ----------------------
     %file_w_matrix
-    %filename_w_matrix = 'w_matrix.mat';
-    %mfw_w_matrix = dsp.MatFileWriter(filename_w_matrix,'VariableName','wi_matrix');
+    filename_w_matrix = 'w_matrix.mat';
+    mfw_w_matrix = dsp.MatFileWriter(filename_w_matrix,'VariableName','wi_matrix');
 
     %file_PrelAMPA_matrix
-    %filename_prelAMPA_matrix = 'prelAMPA_matrix.mat';
-    %mfw_prelAMPA_matrix = dsp.MatFileWriter(filename_prelAMPA_matrix,'VariableName','prelAMPA_matrix');
+    filename_prelAMPA_matrix = 'prelAMPA_matrix.mat';
+    mfw_prelAMPA_matrix = dsp.MatFileWriter(filename_prelAMPA_matrix,'VariableName','prelAMPA_matrix');
 
     %file_PrelNMDA_matrix
-    %filename_prelNMDA_matrix = 'prelNMDA_matrix.mat';
-    %mfw_prelNMDA_matrix = dsp.MatFileWriter(filename_prelNMDA_matrix,'VariableName','prelNMDA_matrix');
+    filename_prelNMDA_matrix = 'prelNMDA_matrix.mat';
+    mfw_prelNMDA_matrix = dsp.MatFileWriter(filename_prelNMDA_matrix,'VariableName','prelNMDA_matrix');
 
     %file_PrelGABA_matrix
-    %filename_prelGABA_matrix = 'prelGABA_matrix.mat';
-    %mfw_prelGABA_matrix = dsp.MatFileWriter(filename_prelGABA_matrix,'VariableName','prelGABA_matrix');
+    filename_prelGABA_matrix = 'prelGABA_matrix.mat';
+    mfw_prelGABA_matrix = dsp.MatFileWriter(filename_prelGABA_matrix,'VariableName','prelGABA_matrix');
 
     %file_pRel_stfAMPA_matrix
-    %filename_pRel_stfAMPA_matrix = 'pRel_stfAMPA_matrix.mat';
-    %mfw_pRel_stfAMPA_matrix = dsp.MatFileWriter(filename_pRel_stfAMPA_matrix,'VariableName','pRel_stfAMPA_matrix');
+    filename_pRel_stfAMPA_matrix = 'pRel_stfAMPA_matrix.mat';
+    mfw_pRel_stfAMPA_matrix = dsp.MatFileWriter(filename_pRel_stfAMPA_matrix,'VariableName','pRel_stfAMPA_matrix');
 
     %file_pRel_stfNMDA_matrix
-    %filename_pRel_stfNMDA_matrix = 'pRel_stfNMDA_matrix.mat';
-    %mfw_pRel_stfNMDA_matrix = dsp.MatFileWriter(filename_pRel_stfNMDA_matrix,'VariableName','pRel_stfNMDA_matrix');
+    filename_pRel_stfNMDA_matrix = 'pRel_stfNMDA_matrix.mat';
+    mfw_pRel_stfNMDA_matrix = dsp.MatFileWriter(filename_pRel_stfNMDA_matrix,'VariableName','pRel_stfNMDA_matrix');
 
     %file_pRel_stfGABA_matrix
-    %filename_pRel_stfGABA_matrix = 'pRel_stfGABA_matrix.mat';
-    %mfw_pRel_stfGABA_matrix = dsp.MatFileWriter(filename_pRel_stfGABA_matrix,'VariableName','pRel_stfGABA_matrix');
+    filename_pRel_stfGABA_matrix = 'pRel_stfGABA_matrix.mat';
+    mfw_pRel_stfGABA_matrix = dsp.MatFileWriter(filename_pRel_stfGABA_matrix,'VariableName','pRel_stfGABA_matrix');
     
     disp("---------------------------Inside rk45: -------------------------");
     %------------------------------------ Initial values to rk45 Outputs  -------------------------
@@ -78,23 +78,23 @@ function [ti, wi, pRelAMPA, pRelNMDA, pRelGABA, pRel_stfAMPA, pRel_stfNMDA, pRel
 
 
     %save initial conditions in the files
-    %mfw_w_matrix(wi);
-    %mfw_prelAMPA_matrix(pRelAMPA);
-    %mfw_prelNMDA_matrix(pRelNMDA);
-    %mfw_prelGABA_matrix(pRelGABA);    
-    %mfw_pRel_stfAMPA_matrix(pRel_stfAMPA);
-    %mfw_pRel_stfNMDA_matrix(pRel_stfNMDA);
-    %mfw_pRel_stfGABA_matrix(pRel_stfGABA);
+    mfw_w_matrix(wi);
+    mfw_prelAMPA_matrix(pRelAMPA);
+    mfw_prelNMDA_matrix(pRelNMDA);
+    mfw_prelGABA_matrix(pRelGABA);    
+    mfw_pRel_stfAMPA_matrix(pRel_stfAMPA);
+    mfw_pRel_stfNMDA_matrix(pRel_stfNMDA);
+    mfw_pRel_stfGABA_matrix(pRel_stfGABA);
     %---------------------------------  Loop to integrate the system ----------------------------------
 
     i = 2;
     
     while(t0+h < tf)
-        %if mod(i,100) == 0
-        %    disp(['Actual i: ', mat2str(i)]);
-        %end
+        if mod(i,100) == 0
+            disp(['Actual i: ', mat2str(i)]);
+        end
         %-------------------------  RK45-Field integrator -----------------------------
-        tic
+        
         pre = x0;
         k1 = h * feval(RHS, t0, x0, neq, nNeurons, nvar, ExcInh, P, randomvL, randomgL, randomgsd,indexAMPA,indexNMDA,indexGABA,indexsynAMPA,indexsynNMDA,indexsynGABA,pRelAMPA,pRelNMDA,pRelGABA,pRel_stfAMPA,pRel_stfNMDA,pRel_stfGABA);
         k2 = h * feval(RHS, t0 + h/2, x0 + k1/2, neq, nNeurons, nvar, ExcInh, P, randomvL, randomgL, randomgsd,indexAMPA,indexNMDA,indexGABA,indexsynAMPA,indexsynNMDA,indexsynGABA,pRelAMPA,pRelNMDA,pRelGABA,pRel_stfAMPA,pRel_stfNMDA,pRel_stfGABA);
@@ -109,28 +109,28 @@ function [ti, wi, pRelAMPA, pRelNMDA, pRelGABA, pRel_stfAMPA, pRel_stfNMDA, pRel
         
         %------------------------  Update pRel vectors  -------------------------------
         [pRelAMPA(1,1:nNeurons),pRelNMDA(1,1:nNeurons),pRelGABA(1,1:nNeurons),pRel_stfAMPA(1,1:nNeurons),pRel_stfNMDA(1,1:nNeurons),pRel_stfGABA(1,1:nNeurons)] = Prerelease(x0,pre,h,fD_AMPA,fD_NMDA,fD_GABA,fF_AMPA,fF_NMDA,fF_GABA,indexvspyramneuron,indexvinterneuron,ExcInh,pRelAMPA,pRelNMDA,pRelGABA,pRel_stfAMPA,pRel_stfNMDA,pRel_stfGABA); 
-        toc
+        
         
         %------------------------ Save current iteration vectors in files  ------------
-        %mfw_w_matrix(wi);
-        %mfw_prelAMPA_matrix(pRelAMPA);
-        %mfw_prelNMDA_matrix(pRelNMDA);
-        %mfw_prelGABA_matrix(pRelGABA);    
-        %mfw_pRel_stfAMPA_matrix(pRel_stfAMPA);
-        %mfw_pRel_stfNMDA_matrix(pRel_stfNMDA);
-        %mfw_pRel_stfGABA_matrix(pRel_stfGABA);
+        mfw_w_matrix(wi);
+        mfw_prelAMPA_matrix(pRelAMPA);
+        mfw_prelNMDA_matrix(pRelNMDA);
+        mfw_prelGABA_matrix(pRelGABA);    
+        mfw_pRel_stfAMPA_matrix(pRel_stfAMPA);
+        mfw_pRel_stfNMDA_matrix(pRel_stfNMDA);
+        mfw_pRel_stfGABA_matrix(pRel_stfGABA);
 
         i = i + 1;
     end
 
     %--------------------  Finish saving in files  ------------------------
-    %release(mfw_w_matrix);
-    %release(mfw_prelAMPA_matrix);
-    %release(mfw_prelNMDA_matrix);
-    %release(mfw_prelGABA_matrix);    
-    %release(mfw_pRel_stfAMPA_matrix);
-    %release(mfw_pRel_stfNMDA_matrix);
-    %release(mfw_pRel_stfNMDA_matrix); 
-    %save('ti.mat','ti');
+    release(mfw_w_matrix);
+    release(mfw_prelAMPA_matrix);
+    release(mfw_prelNMDA_matrix);
+    release(mfw_prelGABA_matrix);    
+    release(mfw_pRel_stfAMPA_matrix);
+    release(mfw_pRel_stfNMDA_matrix);
+    release(mfw_pRel_stfNMDA_matrix); 
+    save('ti.mat','ti');
     
 end
