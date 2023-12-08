@@ -63,13 +63,10 @@ def NetworkSTDall(Dnumber, Fnumber, t0, tf, h):
         #nNeurons: number of neurons in the network
         #neq: number of equations for each neuron in the network
 
-    #Dnumber = 0.91
-    #Fnumber = 1.00
+
     fD_AMPA = fD_NMDA = fD_GABA = Dnumber
     fF_AMPA = fF_NMDA = fF_GABA = Fnumber
-    #t0 = 0
-    #tf = 10000
-    #h = 0.05
+
     N = int((tf-t0)/h)
     nNeurons = ExcInh.size
     neq = 20
@@ -97,6 +94,7 @@ def NetworkSTDall(Dnumber, Fnumber, t0, tf, h):
     excvs_random = np.random.normal(0,1,len(excvs_positions))
     excvd_random = np.random.normal(0,1,len(excvd_positions))
     inhvs_random = np.random.normal(0,1,len(inhvs_positions))
+    
     #These random numbers no estan ben generats entre [-60,-55]
     x0[excvs_positions] = (-60+5*excvs_random)*(1-ExcInh)
     x0[excvd_positions] = (-60+5*excvd_random)*(1-ExcInh)

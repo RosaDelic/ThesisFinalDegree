@@ -61,7 +61,7 @@ def NetworkField(t0, x, neq, nNeurons, nvar, ExcInh, P, randomvL, randomgL, rand
     gEI_NMDA = 0.5/10000                       
     gII_GABA = 0.165/10000 
 
-    # print('===========================================  NetworkField evaluations  ==================================================')
+    #===========================================  NetworkField evaluations  ==================================================
     # initialize vector field to all zeros
 
     dx = np.zeros(nvar)
@@ -92,8 +92,8 @@ def NetworkField(t0, x, neq, nNeurons, nvar, ExcInh, P, randomvL, randomgL, rand
         fact_GABA = 0
 
         #define gAMPA, gNMDA, gGABA depending on the postsyn_neuron neuron_type
-        #if neuron_type == 0 -->  gAMPA = self.__params['gEE_AMPA']; gNMDA = self.__params['gEE_NMDA']; gGABA = self.__params['gIE_GABA']
-        #if neuron_type == 1 -->  gAMPA = self.__params['gEI_AMPA']; gNMDA = self.__params['gEI_NMDA']; gGABA = self.__params['gII_GABA']
+        #if neuron_type == 0 -->  gAMPA = gEE_AMPA; gNMDA = gEE_NMDA; gGABA = gIE_GABA
+        #if neuron_type == 1 -->  gAMPA = gEI_AMPA; gNMDA = gEI_NMDA; gGABA = gII_GABA
 
         gAMPA = gEE_AMPA*(1-neuron_type)+gEI_AMPA*neuron_type
         gNMDA = gEE_NMDA*(1-neuron_type)+gEI_NMDA*neuron_type
@@ -101,18 +101,14 @@ def NetworkField(t0, x, neq, nNeurons, nvar, ExcInh, P, randomvL, randomgL, rand
         
         #this loop can not be parallelized
         for presyn_neuron in range(nNeurons):
+            #iterate over all presyn neurons (matrix P by rows) for AMPA and sum all presynaptic neurons contributions
             fact_AMPA += gAMPA*sAMPA_vector[presyn_neuron]*P[postsyn_neuron,presyn_neuron]*pRelAMPA[presyn_neuron]*pRel_stfAMPA[presyn_neuron]
+
+            #iterate over all presyn neurons (matrix P by rows) for NMDA and sum all presynaptic neurons contributions
             fact_NMDA += gNMDA*sNMDA_vector[presyn_neuron]*P[postsyn_neuron,presyn_neuron]*pRelNMDA[presyn_neuron]*pRel_stfNMDA[presyn_neuron]
+
+            #iterate over all presyn neurons (matrix P by rows) for GABA and sum all presynaptic neurons contributions 
             fact_GABA += gGABA*sGABA_vector[presyn_neuron]*P[postsyn_neuron,presyn_neuron]*pRelGABA[presyn_neuron]*pRel_stfGABA[presyn_neuron]
-
-        #iterate over all presyn neurons (matrix P by rows) for AMPA and sum all presynaptic neurons contributions
-        #fact_AMPA = np.sum(gAMPA*sAMPA_vector*P[postsyn_neuron,:]*pRelAMPA*pRel_stfAMPA)
-
-        #iterate over all presyn neurons (matrix P by rows) for NMDA and sum all presynaptic neurons contributions
-        #fact_NMDA = np.sum(gNMDA*sNMDA_vector*P[postsyn_neuron, :]*pRelNMDA*pRel_stfNMDA)
-
-        #iterate over all presyn neurons (matrix P by rows) for GABA and sum all presynaptic neurons contributions    
-        #fact_GABA = np.sum(gGABA*sGABA_vector*P[postsyn_neuron, :]*pRelGABA*pRel_stfGABA)
 
         if not ExcInh[postsyn_neuron]:
             #pyramidal_neuron
@@ -138,10 +134,10 @@ def NetworkField(t0, x, neq, nNeurons, nvar, ExcInh, P, randomvL, randomgL, rand
             vL = randomvL[postsyn_neuron]
             gsd = randomgsd[postsyn_neuron]
 
-            #synaptic current impinging in the soma
+            #synaptic current impinging on the soma
             Isyn_GABA = fact_GABA*(vs-VsynGABA)
 
-            #synaptic current impinging in the dendrite
+            #synaptic current impinging on the dendrite
             Isyn_AMPA = fact_AMPA*(vd-VsynAMPA)
             Isyn_NMDA = fact_NMDA*(vd-VsynNMDA)
 
@@ -208,9 +204,9 @@ def NetworkField(t0, x, neq, nNeurons, nvar, ExcInh, P, randomvL, randomgL, rand
             hArinf=1/(1+np.exp((vd+75)/4.))
             Iar=Pyramneuron_gar*hArinf*(vd-Pyramneuron_vK)
 
-            #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  MODEL EQUATIONS  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-            dx[1+index]=(-(Il+Ina+Ik+Ia+Iks+Ikna)-gsd*(vs-vd)/Pyramneuron_As)/Pyramneuron_Cm - (Isyn_GABA/(Pyramneuron_Cm*Pyramneuron_As)) #+0.1/(self.__params['Cm']*self.__params['As']);
-            dx[2+index]=(-(Ica+Ikca+INap+Iar)-gsd*(vd-vs)/Pyramneuron_Ad)/Pyramneuron_Cm - ((Isyn_AMPA + Isyn_NMDA)/(Pyramneuron_Cm*Pyramneuron_Ad)) #+0.1/(self.__params['Cm']*self.__params['Ad']);
+            #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  DIFFERENTIAL FIELD MODEL EQUATIONS  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+            dx[1+index]=(-(Il+Ina+Ik+Ia+Iks+Ikna)-gsd*(vs-vd)/Pyramneuron_As)/Pyramneuron_Cm - (Isyn_GABA/(Pyramneuron_Cm*Pyramneuron_As)) 
+            dx[2+index]=(-(Ica+Ikca+INap+Iar)-gsd*(vd-vs)/Pyramneuron_Ad)/Pyramneuron_Cm - ((Isyn_AMPA + Isyn_NMDA)/(Pyramneuron_Cm*Pyramneuron_Ad)) 
             dx[3+index]=Pyramneuron_phi*(ah*(1-h)-bh*h)
             dx[4+index]=Pyramneuron_phi*(an*(1-n)-bn*n)
             dx[5+index]=Pyramneuron_phiHa*(haInf-ha)/Pyramneuron_tauHa
@@ -220,7 +216,7 @@ def NetworkField(t0, x, neq, nNeurons, nvar, ExcInh, P, randomvL, randomgL, rand
 
             dx[9+index] = aAMPA*f_presyn-sAMPA/tauAMPA
             dx[10+index] = aNMDA*xNMDAs*(1-sNMDA)-sNMDA/tauNMDA
-            dx[11+index] = aX*f_presyn-xNMDAs/tauX # aquí no es correspon el codi amb el paper xNMDAs --> sNMDA
+            dx[11+index] = aX*f_presyn-xNMDAs/tauX 
             dx[12+index] = aGABA*f_presyn-sGABA/tauGABA
 
         else:
@@ -269,7 +265,7 @@ def NetworkField(t0, x, neq, nNeurons, nvar, ExcInh, P, randomvL, randomgL, rand
             bn=0.625*np.exp(-(v+44)/80)
 
             #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  DIFFERENTIAL FIELD MODEL EQUATIONS  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-            dx[13+index] = (-(Il+Ina+Ik))/Interneuron_Cm - (Isyn_AMPA + Isyn_NMDA + Isyn_GABA)/(Interneuron_Cm*Interneuron_A) #+ 0.15/(self.__params['Cm']*self.__params['A']);
+            dx[13+index] = (-(Il+Ina+Ik))/Interneuron_Cm - (Isyn_AMPA + Isyn_NMDA + Isyn_GABA)/(Interneuron_Cm*Interneuron_A)
             dx[14+index] = Interneuron_phi*(ah*(1-h)-bh*h)
             dx[15+index] = Interneuron_phi*(an*(1-n)-bn*n)
             dx[16+index] = aAMPA*f_presyn-synAMPA/tauAMPA

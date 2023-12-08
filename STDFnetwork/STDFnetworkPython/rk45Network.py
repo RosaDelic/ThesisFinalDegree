@@ -52,7 +52,6 @@ def rk45Network(RHS, t0, tf, x0, N, h, neq, nNeurons, nvar, P, ExcInh, fD_AMPA, 
     #save initial conditions in the vectors
     ti[0] = t0
     wi[0:nvar, 0] = x0
-    #pRelAMPA[0:nNeurons,0], pRelNMDA[0:nNeurons,0], pRelGABA[0:nNeurons,0], pRel_stfAMPA[0:nNeurons,0], pRel_stfNMDA[0:nNeurons,0], pRel_stfGABA[0:nNeurons,0] = Synapsis.get_pRel()
 
     #---------------------------------  Loop to integrate the system ----------------------------------
 
@@ -63,7 +62,7 @@ def rk45Network(RHS, t0, tf, x0, N, h, neq, nNeurons, nvar, P, ExcInh, fD_AMPA, 
             print('Actual i: ', i)
 
         #-------------------------  RK45-Field integrator -----------------------------
-        pre = x0;
+        pre = x0
         k1 = h * RHS(t0, x0, neq, nNeurons, nvar, ExcInh, P, randomvL, randomgL, randomgsd,indexAMPA,indexNMDA,indexGABA,indexsynAMPA,indexsynNMDA,indexsynGABA,pRelAMPA[:,i-1],pRelNMDA[:,i-1],pRelGABA[:,i-1],pRel_stfAMPA[:,i-1],pRel_stfNMDA[:,i-1],pRel_stfGABA[:,i-1])
         k2 = h * RHS(t0 + h/2, x0 + k1/2, neq, nNeurons, nvar, ExcInh, P, randomvL, randomgL, randomgsd,indexAMPA,indexNMDA,indexGABA,indexsynAMPA,indexsynNMDA,indexsynGABA,pRelAMPA[:,i-1],pRelNMDA[:,i-1],pRelGABA[:,i-1],pRel_stfAMPA[:,i-1],pRel_stfNMDA[:,i-1],pRel_stfGABA[:,i-1])
         k3 = h * RHS(t0 + h/2, x0 + k2/2, neq, nNeurons, nvar, ExcInh, P, randomvL, randomgL, randomgsd,indexAMPA,indexNMDA,indexGABA,indexsynAMPA,indexsynNMDA,indexsynGABA,pRelAMPA[:,i-1],pRelNMDA[:,i-1],pRelGABA[:,i-1],pRel_stfAMPA[:,i-1],pRel_stfNMDA[:,i-1],pRel_stfGABA[:,i-1])
@@ -80,6 +79,4 @@ def rk45Network(RHS, t0, tf, x0, N, h, neq, nNeurons, nvar, P, ExcInh, fD_AMPA, 
         
         i = i + 1
         
-    
-
     return ti, wi, pRelAMPA, pRelNMDA, pRelGABA, pRel_stfAMPA, pRel_stfNMDA, pRel_stfGABA 

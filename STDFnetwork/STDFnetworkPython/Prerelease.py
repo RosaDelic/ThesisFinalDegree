@@ -49,21 +49,7 @@ def Prerelease(x0,pre,nNeurons,neq,rk45_TOL,fD_AMPA,fD_NMDA,fD_GABA,fF_AMPA,fF_N
     pRel_stfGABA = p0_stfGABA*(1-factor_stfGABA)+pRel_stfGABA*factor_stfGABA
 
 
-    #--------------------update pRel if the neuron elicits a spike---------------------
-    
-    #for i in prange(nNeurons):
-    #    voltage_index = i*neq
-        #if neuron is excitatory and elicits a spike --> update pRel AMPA and NMDA for depression (fD) and facilitation (fF)
-    #    if (pre[voltage_index+1]<Vthre) and (x0[voltage_index+1]>Vthre) and (ExcInh[i]==0):
-    #        pRelAMPA[i] = pRelAMPA[i]*fD_AMPA 
-    #        pRelNMDA[i] = pRelNMDA[i]*fD_NMDA
-    #        pRel_stfAMPA[i] = pRel_stfAMPA[i] + (1-pRel_stfAMPA[i])*fF_AMPA
-    #        pRel_stfNMDA[i] = pRel_stfNMDA[i] + (1-pRel_stfNMDA[i])*fF_NMDA
-        #if neuron is inhibitory and elicits a spike --> update pRel GABA for depression (fD) and facilitation (fF)
-    #    elif (pre[voltage_index+13]<Vthre) and (x0[voltage_index+13]>Vthre) and (ExcInh[i]==1):
-    #        pRelGABA[i] = pRelGABA[i]*fD_GABA
-    #        pRel_stfGABA[i] = pRel_stfGABA[i] + (1-pRel_stfGABA[i])*fF_GABA
-            
+    #--------------------update pRel if the neuron elicits a spike---------------------      
         
     #vector 1xnNeurons that in each position contains True/False indicating wheather the neurons fires a spike or not     
     compare = (pre[indexvspyramneuron]<Vthre)*(x0[indexvspyramneuron]>Vthre)*(1-ExcInh)+(pre[indexvinterneuron]<Vthre)*(x0[indexvinterneuron]>Vthre)*(ExcInh)
@@ -86,6 +72,5 @@ def Prerelease(x0,pre,nNeurons,neq,rk45_TOL,fD_AMPA,fD_NMDA,fD_GABA,fF_AMPA,fF_N
     #updating the vector of pRelGABA for facilitation (fD) <--> interneurons only
     pRel_stfGABA = (pRel_stfGABA + (1-pRel_stfGABA)*fF_GABA)*compare*ExcInh+pRel_stfGABA*(compare*(1-ExcInh)+(1-compare))
 
-    
     
     return pRelAMPA, pRelNMDA, pRelGABA, pRel_stfAMPA, pRel_stfNMDA, pRel_stfGABA
