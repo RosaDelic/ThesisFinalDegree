@@ -77,66 +77,66 @@ class PyramidalNeuron(Neuron):
         #--------------------------currents in soma (equations for Vs)-----------------------------
 
         #leak current
-        Il=self.__params['gl']*(x[0]-self.__params['vL']);
+        Il=self.__params['gl']*(x[0]-self.__params['vL'])
         
         #sodium (Na)
-        am=0.1*(x[0]+33)/(1-np.exp(-(x[0]+33)/10));
-        bm=4*np.exp(-(x[0]+53.7)/12);
-        minf=am/(am+bm);
-        Ina=self.__params['gna']*(minf**3)*x[2]*(x[0]-self.__params['vNa']);
-        ah=0.07*np.exp(-(x[0]+50)/10);
-        bh=1/(1+np.exp(-(x[0]+20)/10));
+        am=0.1*(x[0]+33)/(1-np.exp(-(x[0]+33)/10))
+        bm=4*np.exp(-(x[0]+53.7)/12)
+        minf=am/(am+bm)
+        Ina=self.__params['gna']*(minf**3)*x[2]*(x[0]-self.__params['vNa'])
+        ah=0.07*np.exp(-(x[0]+50)/10)
+        bh=1/(1+np.exp(-(x[0]+20)/10))
 
         #delayed rectifier ~potassium (K)
-        Ik=self.__params['gk']*(x[3]**4)*(x[0]-self.__params['vK']);
-        an=0.01*(x[0]+34)/(1-np.exp(-(x[0]+34)/10));
-        bn=0.125*np.exp(-(x[0]+44)/25);
+        Ik=self.__params['gk']*(x[3]**4)*(x[0]-self.__params['vK'])
+        an=0.01*(x[0]+34)/(1-np.exp(-(x[0]+34)/10))
+        bn=0.125*np.exp(-(x[0]+44)/25)
 
         #fast A-type K channel
-        haInf=1/(1+np.exp((x[0]+80)/6));
-        maInf=1/(1+np.exp(-(x[0]+50)/20));
-        Ia=self.__params['ga']*(maInf**3)*x[4]*(x[0]-self.__params['vK']);
+        haInf=1/(1+np.exp((x[0]+80)/6))
+        maInf=1/(1+np.exp(-(x[0]+50)/20))
+        Ia=self.__params['ga']*(maInf**3)*x[4]*(x[0]-self.__params['vK'])
 
         #non-inactivating K channel
-        Iks=self.__params['gks']*x[5]*(x[0]-self.__params['vK']);
-        mksinf=1/(1+np.exp(-(x[0]+34)/6.5));
-        tks=8/(np.exp(-(x[0]+55)/30)+np.exp((x[0]+55)/30));
+        Iks=self.__params['gks']*x[5]*(x[0]-self.__params['vK'])
+        mksinf=1/(1+np.exp(-(x[0]+34)/6.5))
+        tks=8/(np.exp(-(x[0]+55)/30)+np.exp((x[0]+55)/30))
 
         #Na dependent K channel
         if x[6]<10**(-5):
-            Ikna = 0;
-            wNa=0;
+            Ikna = 0
+            wNa=0
         else:
-            wNa=0.37/(1+(38.7/x[6])**3.5); 
-            Ikna=self.__params['gkna']*wNa*(x[0]-self.__params['vK']);
+            wNa=0.37/(1+(38.7/x[6])**3.5)
+            Ikna=self.__params['gkna']*wNa*(x[0]-self.__params['vK'])
         
         #--------------------------currents in dendrite (equations for Vd)-----------------------------
 
         #calcium channel
-        mCainf=1/(1+np.exp(-(x[1]+20)/9));
-        Ica=self.__params['gca']*(mCainf**2)*(x[1]-self.__params['vCa']);
+        mCainf=1/(1+np.exp(-(x[1]+20)/9))
+        Ica=self.__params['gca']*(mCainf**2)*(x[1]-self.__params['vCa'])
 
         #Ca dependent K channel
-        Ikca=((self.__params['gkca']*x[7])/(x[7]+self.__params['Kd']))*(x[1]-self.__params['vK']);
+        Ikca=((self.__params['gkca']*x[7])/(x[7]+self.__params['Kd']))*(x[1]-self.__params['vK'])
 
         #persistent sodium channel (NaP)
-        mNapinf=1/(1+np.exp(-(x[1]+55.7)/7.7));
-        INap=self.__params['gnap']*(mNapinf**3)*(x[1]-self.__params['vNa']);
+        mNapinf=1/(1+np.exp(-(x[1]+55.7)/7.7))
+        INap=self.__params['gnap']*(mNapinf**3)*(x[1]-self.__params['vNa'])
 
 
         #inward rectifying K channel
-        hArinf=1/(1+np.exp((x[1]+75)/4.));
-        Iar=self.__params['gar']*hArinf*(x[1]-self.__params['vK']);
+        hArinf=1/(1+np.exp((x[1]+75)/4.))
+        Iar=self.__params['gar']*hArinf*(x[1]-self.__params['vK'])
 
         #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  MODEL EQUATIONS  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-        dx[0]=(-(Il+Ina+Ik+Ia+Iks+Ikna)-self.__params['gsd']*(x[0]-x[1])/self.__params['As'])/self.__params['Cm']#+0.1/(self.__params['Cm']*self.__params['As']);
-        dx[1]=(-(Ica+Ikca+INap+Iar)-self.__params['gsd']*(x[1]-x[0])/self.__params['Ad'])/self.__params['Cm']#+0.1/(self.__params['Cm']*self.__params['Ad']);
-        dx[2]=self.__params['phi']*(ah*(1-x[2])-bh*x[2]);
-        dx[3]=self.__params['phi']*(an*(1-x[3])-bn*x[3]);
-        dx[4]=self.__params['phiHa']*(haInf-x[4])/self.__params['tauHa'];
-        dx[5]=self.__params['phiKs']*(mksinf-x[5])/tks;
-        dx[6]=-self.__params['aNa']*(self.__params['As']*Ina+self.__params['Ad']*INap)-self.__params['Rpump']*((x[6]**3)/((x[6]**3)+3375)-(self.__params['NaEq']**3)/((self.__params['NaEq']**3)+3375));
-        dx[7]=-self.__params['aCa']*(self.__params['Ad']*Ica)-(x[7]/self.__params['tauCa']);
+        dx[0]=(-(Il+Ina+Ik+Ia+Iks+Ikna)-self.__params['gsd']*(x[0]-x[1])/self.__params['As'])/self.__params['Cm']
+        dx[1]=(-(Ica+Ikca+INap+Iar)-self.__params['gsd']*(x[1]-x[0])/self.__params['Ad'])/self.__params['Cm']
+        dx[2]=self.__params['phi']*(ah*(1-x[2])-bh*x[2])
+        dx[3]=self.__params['phi']*(an*(1-x[3])-bn*x[3])
+        dx[4]=self.__params['phiHa']*(haInf-x[4])/self.__params['tauHa']
+        dx[5]=self.__params['phiKs']*(mksinf-x[5])/tks
+        dx[6]=-self.__params['aNa']*(self.__params['As']*Ina+self.__params['Ad']*INap)-self.__params['Rpump']*((x[6]**3)/((x[6]**3)+3375)-(self.__params['NaEq']**3)/((self.__params['NaEq']**3)+3375))
+        dx[7]=-self.__params['aCa']*(self.__params['Ad']*Ica)-(x[7]/self.__params['tauCa'])
         
         
         return dx
@@ -168,12 +168,12 @@ class PyramidalNeuron(Neuron):
         Isyn_GABA = fact_GABA*(x[1]-synaptic_params['VsynGABA'])
 
         dx_neuron[1:1+self.__neq] = self.neuronalmodel(t,x[1:1+self.__neq])
-        dx_neuron[1] = dx_neuron[1] - (Isyn_AMPA + Isyn_NMDA)/(self.__params['Cm']*self.__params['As'])
-        dx_neuron[2] = dx_neuron[2] - Isyn_GABA/(self.__params['Cm']*self.__params['Ad'])
+        dx_neuron[1] = dx_neuron[1] - Isyn_GABA/(self.__params['Cm']*self.__params['As'])
+        dx_neuron[2] = dx_neuron[2] - (Isyn_AMPA + Isyn_NMDA)/(self.__params['Cm']*self.__params['Ad'])
 
         dx_neuron[9] = synaptic_params['aAMPA']*self.f_presyn(x[1])-x[9]/synaptic_params['tauAMPA']
         dx_neuron[10] = synaptic_params['aNMDA']*x[11]*(1-x[10])-x[10]/synaptic_params['tauNMDA']
-        dx_neuron[11] = synaptic_params['aX']*self.f_presyn(x[1])-x[11]/synaptic_params['tauX'] #aquí no es correspon el codi amb el paper xNMDAs --> sNMDA
+        dx_neuron[11] = synaptic_params['aX']*self.f_presyn(x[1])-x[11]/synaptic_params['tauX'] 
         dx_neuron[12] = synaptic_params['aGABA']*self.f_presyn(x[1])-x[12]/synaptic_params['tauGABA']
         
         return dx_neuron

@@ -65,25 +65,25 @@ class InterNeuron(Neuron):
         #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  PREVIOUS CALCULUS  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 
 
         #leak current
-        Il=self.__params['gl']*(x[0]-self.__params['vL']);
+        Il=self.__params['gl']*(x[0]-self.__params['vL'])
 
         #sodium (Na)
-        am=0.5*(x[0]+35)/(1-np.exp(-(x[0]+35)/10));
-        bm=20*np.exp(-(x[0]+60)/18);
-        minf=am/(am+bm);
-        Ina=self.__params['gna']*(minf**3)*x[1]*(x[0]-self.__params['vNa']);
-        ah=0.35*np.exp(-(x[0]+58)/20);
-        bh=5/(1+np.exp(-(x[0]+28)/10));
+        am=0.5*(x[0]+35)/(1-np.exp(-(x[0]+35)/10))
+        bm=20*np.exp(-(x[0]+60)/18)
+        minf=am/(am+bm)
+        Ina=self.__params['gna']*(minf**3)*x[1]*(x[0]-self.__params['vNa'])
+        ah=0.35*np.exp(-(x[0]+58)/20)
+        bh=5/(1+np.exp(-(x[0]+28)/10))
 
         #delayed rectifier potassium (K)
-        Ik=self.__params['gk']*(x[2]**4)*(x[0]-self.__params['vK']);
-        an=0.05*(x[0]+34)/(1-np.exp(-(x[0]+34)/10));
-        bn=0.625*np.exp(-(x[0]+44)/80);
+        Ik=self.__params['gk']*(x[2]**4)*(x[0]-self.__params['vK'])
+        an=0.05*(x[0]+34)/(1-np.exp(-(x[0]+34)/10))
+        bn=0.625*np.exp(-(x[0]+44)/80)
 
         #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  DIFFERENTIAL FIELD MODEL EQUATIONS  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-        dx[0]=(-(Il+Ina+Ik))/self.__params['Cm'] #+ 0.15/(self.__params['Cm']*self.__params['A']);
-        dx[1]=self.__params['phi']*(ah*(1-x[1])-bh*x[1]);
-        dx[2]=self.__params['phi']*(an*(1-x[2])-bn*x[2]);
+        dx[0]=(-(Il+Ina+Ik))/self.__params['Cm'] 
+        dx[1]=self.__params['phi']*(ah*(1-x[1])-bh*x[1])
+        dx[2]=self.__params['phi']*(an*(1-x[2])-bn*x[2])
 
         return dx
     

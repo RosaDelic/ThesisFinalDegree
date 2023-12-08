@@ -8,7 +8,7 @@ from numba import jit
 def NetworkField(t0, x0, neq, nNeurons, nvar, synaptic_params, Pyramneuron, Interneuron, Synapsis, ExcInh, randomvL, randomgL, randomgsd):
     #print('===========================================  NetworkField evaluations  ==================================================')
     #initialize vector field to all zeros
-    #start = time.time()
+
     dx = np.zeros(nvar)
     sAMPA, sNMDA, sGABA, synAMPA, synNMDA, synGABA = Synapsis.take_synapticvariables(x0)
     
@@ -26,17 +26,10 @@ def NetworkField(t0, x0, neq, nNeurons, nvar, synaptic_params, Pyramneuron, Inte
 
         if not ExcInh[postsyn_neuron]:
             #pyramidal_neuron
-            #Pyramneuron.update_randomparams(randomvL[postsyn_neuron], randomgL[postsyn_neuron], randomgsd[postsyn_neuron])
             dx[index:index+neq] = Pyramneuron.neuronalmodel_connected(t0,x0_actualneuron,neq,synaptic_params,fact_AMPA, fact_NMDA, fact_GABA, randomvL, randomgL, randomgsd, postsyn_neuron)
             
         else:
             #interneuron
-            #Interneuron.update_randomparams(randomvL[postsyn_neuron], randomgL[postsyn_neuron])
             dx[index:index+neq] = Interneuron.neuronalmodel_connected(t0,x0_actualneuron,neq,synaptic_params,fact_AMPA, fact_NMDA, fact_GABA, randomvL, randomgL, postsyn_neuron)
-        #fin = time.time()
-        #exec_time = fin-start
-    #fin = time.time()
-    #exec_time = fin-start
-    #print('Network field exec_time: ', exec_time)
     
     return dx 

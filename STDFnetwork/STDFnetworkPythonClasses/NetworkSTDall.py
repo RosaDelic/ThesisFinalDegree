@@ -20,6 +20,8 @@ from NetworkField import NetworkField
 from rk45Network import rk45Network
 from Tools import *
 
+start = time.time()
+
 
 print('--------------------------  STD - NETWORK  ---------------------------')
 
@@ -89,13 +91,6 @@ excvd_positions = 2+np.arange(nNeurons)*neq
 inhvs_positions = 13+np.arange(nNeurons)*neq
 
 x0 = initialize_randomvoltage(ExcInh,x0,excvs_positions,excvd_positions,inhvs_positions)
-#for i in range(nNeurons):
-#    index=i*neq
-#    print('neuron_type: ', ExcInh[i])
-#    print('vs variable: ', x0[index+1])
-#    print('vd variable: ', x0[index+2])
-#    print('v variable: ', x0[index+13])
-#stop
 
 #4. Define the vectors for random parameters of the neurons
 SDvL = SDNumber(nNeurons)
@@ -106,16 +101,10 @@ randomvL, randomgL, randomgsd = initialize_randomparameters(ExcInh,SDvL, SDgL, S
 
 
 #5. Execute rk45 to solve NetworkField
-start = time.time()
 [ti, wi, pRelAMPA, pRelNMDA, pRelGABA, pRel_stfAMPA, pRel_stfNMDA, pRel_stfGABA] = rk45Network(NetworkField, t0, tf, x0, N, h, neq, nNeurons, nvar, P, ExcInh, fD_AMPA, fD_NMDA, fD_GABA, fF_AMPA, fF_NMDA, fF_GABA, randomvL, randomgL, randomgsd)
-np.save('ti.npy',ti)
 fin = time.time()
 exec_time = fin-start
 
 
 #6. Save the outputs in file: ti, wi, pRelsX, pRels_stfX where X=AMPA, NMDA, GABA
-np.savez('fD0.97_fF1_exec_time.npz', exec_time = exec_time,ti=ti, wi=wi, pRelAMPA=pRelAMPA, pRelNMDA=pRelNMDA, pRelGABA=pRelGABA, pRel_stfAMPA=pRel_stfAMPA, pRel_stfNMDA=pRel_stfNMDA, pRel_stfGABA=pRel_stfGABA)
-
-#load data
-#data = np.load('test.npz')
-#ti = data['ti']
+np.savez('fD'+str(Dnumber)+'_fF'+str(Fnumber)+'.npz', exec_time = exec_time,ti=ti, wi=wi, pRelAMPA=pRelAMPA, pRelNMDA=pRelNMDA, pRelGABA=pRelGABA, pRel_stfAMPA=pRel_stfAMPA, pRel_stfNMDA=pRel_stfNMDA, pRel_stfGABA=pRel_stfGABA)

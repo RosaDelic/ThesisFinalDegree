@@ -67,7 +67,7 @@ def rk45Network(RHS, t0, tf, x0, N, h, neq, nNeurons, nvar, P, ExcInh, fD_AMPA, 
             print('Actual i: ', i)
 
         #-------------------------  RK45-Field integrator -----------------------------
-        pre = x0;
+        pre = x0
         k1 = h * RHS(t0, x0, neq, nNeurons, nvar, synaptic_params, Pyramneuron, Interneuron, Synapsis, ExcInh, randomvL, randomgL, randomgsd)
         k2 = h * RHS(t0 + h/2, x0 + k1/2, neq, nNeurons, nvar, synaptic_params, Pyramneuron, Interneuron, Synapsis, ExcInh, randomvL, randomgL, randomgsd)
         k3 = h * RHS(t0 + h/2, x0 + k2/2, neq, nNeurons, nvar, synaptic_params, Pyramneuron, Interneuron, Synapsis, ExcInh, randomvL, randomgL, randomgsd)
