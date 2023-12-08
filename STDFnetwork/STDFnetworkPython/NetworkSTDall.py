@@ -26,7 +26,8 @@ def NetworkSTDall(Dnumber, Fnumber, t0, tf, h):
     from NetworkField import NetworkField
     from rk45Network import rk45Network
     from SDNumber import SDNumber
-
+    
+    start = time.time()
 
     print('--------------------------  STD - NETWORK  ---------------------------')
 
@@ -67,7 +68,7 @@ def NetworkSTDall(Dnumber, Fnumber, t0, tf, h):
     fD_AMPA = fD_NMDA = fD_GABA = Dnumber
     fF_AMPA = fF_NMDA = fF_GABA = Fnumber
 
-    N = int((tf-t0)/h)
+    N = int((tf-t0)/h)+1
     nNeurons = ExcInh.size
     neq = 20
     nvar = nNeurons*neq
@@ -110,7 +111,7 @@ def NetworkSTDall(Dnumber, Fnumber, t0, tf, h):
     randomgsd = ((1.75 + 0.1*SDgsd)*0.1)*(1-ExcInh)
 
     #5. Execute rk45 to solve NetworkField
-    start = time.time()
+    
     [ti, wi, pRelAMPA, pRelNMDA, pRelGABA, pRel_stfAMPA, pRel_stfNMDA, pRel_stfGABA] = rk45Network(NetworkField, t0, tf, x0, N, h, neq, nNeurons, nvar, P, ExcInh, fD_AMPA, fD_NMDA, fD_GABA, fF_AMPA, fF_NMDA, fF_GABA, randomvL, randomgL, randomgsd)
     fin = time.time()
     exec_time = fin-start
