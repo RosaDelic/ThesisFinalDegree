@@ -91,5 +91,5 @@ function [t_final, ti, wi, pRelAMPA, pRelNMDA, pRelGABA, pRel_stfAMPA, pRel_stfN
     [ti, wi, pRelAMPA, pRelNMDA, pRelGABA, pRel_stfAMPA, pRel_stfNMDA, pRel_stfGABA] = rk45Network('NetworkField', t0, tf, x0, N, h, neq, nNeurons, nvar, ExcInh, P, fD_AMPA, fD_NMDA, fD_GABA, fF_AMPA, fF_NMDA, fF_GABA, randomvL, randomgL, randomgsd,p0_stf);
     t_final = toc(t_init)
     %data_w = load('w_matrix.mat','wi_matrix');
-    save(filename,"ti","wi", "pRelAMPA", "pRelNMDA", "pRelGABA", "pRel_stfAMPA", "pRel_stfNMDA", "pRel_stfGABA");
+    %save(filename,"ti","wi", "pRelAMPA", "pRelNMDA", "pRelGABA", "pRel_stfAMPA", "pRel_stfNMDA", "pRel_stfGABA");
 end
