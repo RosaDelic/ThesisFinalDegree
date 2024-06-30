@@ -55,7 +55,6 @@ function dx = NetworkField(t0, x, neq, nNeurons, nvar, ExcInh, P, randomvL, rand
     gEI_NMDA = 0.5/10000;                       
     gII_GABA = 0.165/10000; 
     
-    % ===========================================  NetworkField evaluations  ==================================================
     % initialize vector field to all zeros
     
     dx = zeros(1,nvar);
@@ -82,8 +81,8 @@ function dx = NetworkField(t0, x, neq, nNeurons, nvar, ExcInh, P, randomvL, rand
         neuron_type = ExcInh(postsyn_neuron+1);
         
         %define gAMPA, gNMDA, gGABA depending on the postsyn_neuron neuron_type
-        %if neuron_type == 0 -->  gAMPA = gEE_AMPA; gNMDA = gEE_NMDA; gGABA = gIE_GABA
-        %if neuron_type == 1 -->  gAMPA = gEI_AMPA; gNMDA = gEI_NMDA; gGABA = gII_GABA
+        %if neuron_type == 0 -->  gAMPA = self.__params['gEE_AMPA']; gNMDA = self.__params['gEE_NMDA']; gGABA = self.__params['gIE_GABA']
+        %if neuron_type == 1 -->  gAMPA = self.__params['gEI_AMPA']; gNMDA = self.__params['gEI_NMDA']; gGABA = self.__params['gII_GABA']
         
         gAMPA = gEE_AMPA*(1-neuron_type)+gEI_AMPA*neuron_type;
         gNMDA = gEE_NMDA*(1-neuron_type)+gEI_NMDA*neuron_type;
@@ -96,9 +95,8 @@ function dx = NetworkField(t0, x, neq, nNeurons, nvar, ExcInh, P, randomvL, rand
         fact_NMDA = sum(gNMDA*sNMDA_vector.*P(postsyn_neuron+1, :).*pRelNMDA.*pRel_stfNMDA);
     
         %iterate over all presyn neurons (matrix P by rows) for GABA and sum all presynaptic neurons contributions    
-        fact_GABA = sum(gGABA*sGABA_vector.*P(postsyn_neuron+1, :).*pRelGABA.*pRel_stfGABA);
+        fact_GABA = sum(gGABA*synGABA_vector.*P(postsyn_neuron+1, :).*pRelGABA.*pRel_stfGABA);
         
-    
         if ~ExcInh(postsyn_neuron+1)
             %pyramidal_neuron
             %soma's voltage
@@ -130,12 +128,8 @@ function dx = NetworkField(t0, x, neq, nNeurons, nvar, ExcInh, P, randomvL, rand
             Isyn_AMPA = fact_AMPA*(vd-VsynAMPA);
             Isyn_NMDA = fact_NMDA*(vd-VsynNMDA);
     
-    
-    
             %----------------------  f(V_presyn)  -----------------------
             f_presyn = (1/(1+exp(-(vs-20)/2)));
-    
-    
     
             %<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  PREVIOUS CALCULUS  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     
@@ -193,9 +187,9 @@ function dx = NetworkField(t0, x, neq, nNeurons, nvar, ExcInh, P, randomvL, rand
             hArinf=1/(1+exp((vd+75)/4.));
             Iar=Pyramneuron_gar*hArinf*(vd-Pyramneuron_vK);
     
-            %<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  DIFFERENTIAL FIELD MODEL EQUATIONS  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-            dx(1+index)=(-(Il+Ina+Ik+Ia+Iks+Ikna)-gsd*(vs-vd)/Pyramneuron_As)/Pyramneuron_Cm - (Isyn_GABA/(Pyramneuron_Cm*Pyramneuron_As));
-            dx(2+index)=(-(Ica+Ikca+INap+Iar)-gsd*(vd-vs)/Pyramneuron_Ad)/Pyramneuron_Cm - ((Isyn_AMPA + Isyn_NMDA)/(Pyramneuron_Cm*Pyramneuron_Ad));
+            %<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  MODEL EQUATIONS  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+            dx(1+index)=(-(Il+Ina+Ik+Ia+Iks+Ikna)-gsd*(vs-vd)/Pyramneuron_As)/Pyramneuron_Cm - (Isyn_GABA/(Pyramneuron_Cm*Pyramneuron_As));%+0.1/(self.__params['Cm']*self.__params['As']);
+            dx(2+index)=(-(Ica+Ikca+INap+Iar)-gsd*(vd-vs)/Pyramneuron_Ad)/Pyramneuron_Cm - ((Isyn_AMPA + Isyn_NMDA)/(Pyramneuron_Cm*Pyramneuron_Ad));%+0.1/(self.__params['Cm']*self.__params['Ad']);
             dx(3+index)=Pyramneuron_phi*(ah*(1-h)-bh*h);
             dx(4+index)=Pyramneuron_phi*(an*(1-n)-bn*n);
             dx(5+index)=Pyramneuron_phiHa*(haInf-ha)/Pyramneuron_tauHa;
@@ -253,7 +247,7 @@ function dx = NetworkField(t0, x, neq, nNeurons, nvar, ExcInh, P, randomvL, rand
             bn=0.625*exp(-(v+44)/80);
     
             %<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  DIFFERENTIAL FIELD MODEL EQUATIONS  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-            dx(13+index) = (-(Il+Ina+Ik))/Interneuron_Cm - (Isyn_AMPA + Isyn_NMDA + Isyn_GABA)/(Interneuron_Cm*Interneuron_A); 
+            dx(13+index) = (-(Il+Ina+Ik))/Interneuron_Cm - (Isyn_AMPA + Isyn_NMDA + Isyn_GABA)/(Interneuron_Cm*Interneuron_A); %+ 0.15/(self.__params['Cm']*self.__params['A']);
             dx(14+index) = Interneuron_phi*(ah*(1-h)-bh*h);
             dx(15+index) = Interneuron_phi*(an*(1-n)-bn*n);
             dx(16+index) = aAMPA*f_presyn-synAMPA/tauAMPA;

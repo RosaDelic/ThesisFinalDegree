@@ -1,4 +1,4 @@
-function [ti, wi, pRelAMPA, pRelNMDA, pRelGABA, pRel_stfAMPA, pRel_stfNMDA, pRel_stfGABA] = rk45Network(RHS, t0, tf, x0, N, h, neq, nNeurons, nvar, ExcInh, P, fD_AMPA, fD_NMDA, fD_GABA, fF_AMPA, fF_NMDA, fF_GABA, randomvL, randomgL, randomgsd)
+function [ti, wi, pRelAMPA, pRelNMDA, pRelGABA, pRel_stfAMPA, pRel_stfNMDA, pRel_stfGABA] = rk45Network(RHS, t0, tf, x0, N, h, neq, nNeurons, nvar, ExcInh, P, fD_AMPA, fD_NMDA, fD_GABA, fF_AMPA, fF_NMDA, fF_GABA, randomvL, randomgL, randomgsd,p0_stf)
     %RHS: differential equations system to solve with rk45 method
     %t0: initial time of the simulation
     %tf: final time of the simulation
@@ -39,7 +39,6 @@ function [ti, wi, pRelAMPA, pRelNMDA, pRelGABA, pRel_stfAMPA, pRel_stfNMDA, pRel
     filename_pRel_stfGABA_matrix = 'pRel_stfGABA_matrix.mat';
     mfw_pRel_stfGABA_matrix = dsp.MatFileWriter(filename_pRel_stfGABA_matrix,'VariableName','pRel_stfGABA_matrix');
     
-    disp("---------------------------Inside rk45: -------------------------");
     %------------------------------------ Initial values to rk45 Outputs  -------------------------
     
     %initialize time vector (ti), system solution vector (wi), all probability of Release vectors (pRelAMPA, pRelNMDA, pRelGABA, pRel_stfAMPA, pRel_stfNMDA, pRel_stfGABA)
@@ -88,13 +87,13 @@ function [ti, wi, pRelAMPA, pRelNMDA, pRelGABA, pRel_stfAMPA, pRel_stfNMDA, pRel
     %---------------------------------  Loop to integrate the system ----------------------------------
 
     i = 2;
+    t0 = h;
     
     while(t0+h < tf)
-        if mod(i,100) == 0
-            disp(['Actual i: ', mat2str(i)]);
+        if mod(i,1000) == 0
+           disp(['Actual i: ', mat2str(i)]);
         end
         %-------------------------  RK45-Field integrator -----------------------------
-        
         pre = x0;
         k1 = h * feval(RHS, t0, x0, neq, nNeurons, nvar, ExcInh, P, randomvL, randomgL, randomgsd,indexAMPA,indexNMDA,indexGABA,indexsynAMPA,indexsynNMDA,indexsynGABA,pRelAMPA,pRelNMDA,pRelGABA,pRel_stfAMPA,pRel_stfNMDA,pRel_stfGABA);
         k2 = h * feval(RHS, t0 + h/2, x0 + k1/2, neq, nNeurons, nvar, ExcInh, P, randomvL, randomgL, randomgsd,indexAMPA,indexNMDA,indexGABA,indexsynAMPA,indexsynNMDA,indexsynGABA,pRelAMPA,pRelNMDA,pRelGABA,pRel_stfAMPA,pRel_stfNMDA,pRel_stfGABA);
@@ -108,8 +107,7 @@ function [ti, wi, pRelAMPA, pRelNMDA, pRelGABA, pRel_stfAMPA, pRel_stfNMDA, pRel
         wi(1,1:nvar) = x0;
         
         %------------------------  Update pRel vectors  -------------------------------
-        [pRelAMPA(1,1:nNeurons),pRelNMDA(1,1:nNeurons),pRelGABA(1,1:nNeurons),pRel_stfAMPA(1,1:nNeurons),pRel_stfNMDA(1,1:nNeurons),pRel_stfGABA(1,1:nNeurons)] = Prerelease(x0,pre,h,fD_AMPA,fD_NMDA,fD_GABA,fF_AMPA,fF_NMDA,fF_GABA,indexvspyramneuron,indexvinterneuron,ExcInh,pRelAMPA,pRelNMDA,pRelGABA,pRel_stfAMPA,pRel_stfNMDA,pRel_stfGABA); 
-        
+        [pRelAMPA(1,1:nNeurons),pRelNMDA(1,1:nNeurons),pRelGABA(1,1:nNeurons),pRel_stfAMPA(1,1:nNeurons),pRel_stfNMDA(1,1:nNeurons),pRel_stfGABA(1,1:nNeurons)] = Prerelease(x0,pre,h,fD_AMPA,fD_NMDA,fD_GABA,fF_AMPA,fF_NMDA,fF_GABA,p0_stf,indexvspyramneuron,indexvinterneuron,ExcInh,pRelAMPA,pRelNMDA,pRelGABA,pRel_stfAMPA,pRel_stfNMDA,pRel_stfGABA); 
         
         %------------------------ Save current iteration vectors in files  ------------
         mfw_w_matrix(wi);

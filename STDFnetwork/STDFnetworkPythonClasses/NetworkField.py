@@ -6,9 +6,6 @@ from numba import jit
 
 @jit(nopython=True)
 def NetworkField(t0, x0, neq, nNeurons, nvar, synaptic_params, Pyramneuron, Interneuron, Synapsis, ExcInh, randomvL, randomgL, randomgsd):
-    #print('===========================================  NetworkField evaluations  ==================================================')
-    #initialize vector field to all zeros
-
     dx = np.zeros(nvar)
     sAMPA, sNMDA, sGABA, synAMPA, synNMDA, synGABA = Synapsis.take_synapticvariables(x0)
     
@@ -19,17 +16,16 @@ def NetworkField(t0, x0, neq, nNeurons, nvar, synaptic_params, Pyramneuron, Inte
         #postsyn_neuron identifies the current neuron, we calculate the Isyn by looking all the presyn_neurons
         #calculate the s_i from this neuron to the other postsyn_neurons
         
-        #calculate the synaptic factors Isyn = fact_syn*(v-vsyn) of this neuron
+        #Calculate the synaptic factors Isyn = fact_syn*(v-vsyn) of this neuron
         fact_AMPA, fact_NMDA, fact_GABA = Synapsis.calculate_synapticfactors(postsyn_neuron, x0, sAMPA, sNMDA, sGABA, synAMPA, synNMDA, synGABA)
         
         x0_actualneuron = x0[index:index+neq]
 
+        #Update neuron field
         if not ExcInh[postsyn_neuron]:
-            #pyramidal_neuron
             dx[index:index+neq] = Pyramneuron.neuronalmodel_connected(t0,x0_actualneuron,neq,synaptic_params,fact_AMPA, fact_NMDA, fact_GABA, randomvL, randomgL, randomgsd, postsyn_neuron)
             
         else:
-            #interneuron
             dx[index:index+neq] = Interneuron.neuronalmodel_connected(t0,x0_actualneuron,neq,synaptic_params,fact_AMPA, fact_NMDA, fact_GABA, randomvL, randomgL, postsyn_neuron)
     
     return dx 

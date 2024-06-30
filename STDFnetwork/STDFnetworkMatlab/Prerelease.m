@@ -1,9 +1,9 @@
-function [pRelAMPA, pRelNMDA, pRelGABA, pRel_stfAMPA, pRel_stfNMDA, pRel_stfGABA] = Prerelease(x0,pre,rk45_TOL,fD_AMPA,fD_NMDA,fD_GABA,fF_AMPA,fF_NMDA,fF_GABA,indexvspyramneuron,indexvinterneuron,ExcInh,pRelAMPA,pRelNMDA,pRelGABA,pRel_stfAMPA,pRel_stfNMDA,pRel_stfGABA)
+function [pRelAMPA, pRelNMDA, pRelGABA, pRel_stfAMPA, pRel_stfNMDA, pRel_stfGABA] = Prerelease(x0,pre,rk45_TOL,fD_AMPA,fD_NMDA,fD_GABA,fF_AMPA,fF_NMDA,fF_GABA,p0_stf,indexvspyramneuron,indexvinterneuron,ExcInh,pRelAMPA,pRelNMDA,pRelGABA,pRel_stfAMPA,pRel_stfNMDA,pRel_stfGABA)
     %x0: actual vector for the network field
     %pre: previous vector for the network field
     %fD_AMPA = fD_NMDA = fD_GABA: depression factor in the network
     %fF_AMPA = fF_NMDA = fF_GABA: facilitation factor in the network
-    
+
     %--------------  Define synaptic parameters we'll need  ---------------
     tau_relAMPA = 400;
     tau_relNMDA = 400;
@@ -26,9 +26,9 @@ function [pRelAMPA, pRelNMDA, pRelGABA, pRel_stfAMPA, pRel_stfNMDA, pRel_stfGABA
     p0_AMPA = 1; 
     p0_NMDA = 1;
     p0_GABA = 1;
-    p0_stfAMPA = 1; %I think these ones should be 0.1 
-    p0_stfNMDA = 1;
-    p0_stfGABA = 1;
+    p0_stfAMPA = p0_stf; 
+    p0_stfNMDA = p0_stf;
+    p0_stfGABA = p0_stf;
 
     Vthre = -50;
         
@@ -37,12 +37,10 @@ function [pRelAMPA, pRelNMDA, pRelGABA, pRel_stfAMPA, pRel_stfNMDA, pRel_stfGABA
     pRelNMDA = p0_NMDA*(1-factor_relNMDA)+pRelNMDA*factor_relNMDA;
     pRelGABA = p0_GABA*(1-factor_relGABA)+pRelGABA*factor_relGABA;
     
-
     %pRel for synaptic facilitation (fF) distinguishing AMPA, NMDA, GABA
     pRel_stfAMPA = p0_stfAMPA*(1-factor_stfAMPA)+pRel_stfAMPA*factor_stfAMPA;
     pRel_stfNMDA = p0_stfNMDA*(1-factor_stfNMDA)+pRel_stfNMDA*factor_stfNMDA;
     pRel_stfGABA = p0_stfGABA*(1-factor_stfGABA)+pRel_stfGABA*factor_stfGABA;
-
 
     %--------------------update pRel if the neuron elicits a spike---------------------
         
@@ -66,5 +64,4 @@ function [pRelAMPA, pRelNMDA, pRelGABA, pRel_stfAMPA, pRel_stfNMDA, pRel_stfGABA
         
     %updating the vector of pRelGABA for facilitation (fD) <--> interneurons only
     pRel_stfGABA = (pRel_stfGABA + (1-pRel_stfGABA).*fF_GABA).*compare.*ExcInh+pRel_stfGABA.*(compare.*(1-ExcInh)+(1-compare));
-    toc
 end

@@ -3,7 +3,7 @@ import numba as nb
 from numba import jit, njit
 
 @njit
-def Prerelease(x0,pre,nNeurons,neq,rk45_TOL,fD_AMPA,fD_NMDA,fD_GABA,fF_AMPA,fF_NMDA,fF_GABA,indexvspyramneuron,indexvinterneuron,ExcInh,pRelAMPA,pRelNMDA,pRelGABA,pRel_stfAMPA,pRel_stfNMDA,pRel_stfGABA):
+def Prerelease(x0,pre,nNeurons,neq,rk45_TOL,fD_AMPA,fD_NMDA,fD_GABA,fF_AMPA,fF_NMDA,fF_GABA,p0_stf,indexvspyramneuron,indexvinterneuron,ExcInh,pRelAMPA,pRelNMDA,pRelGABA,pRel_stfAMPA,pRel_stfNMDA,pRel_stfGABA):
     
     #x0: actual vector for the network field
     #pre: previous vector for the network field
@@ -31,9 +31,9 @@ def Prerelease(x0,pre,nNeurons,neq,rk45_TOL,fD_AMPA,fD_NMDA,fD_GABA,fF_AMPA,fF_N
     p0_AMPA = 1 
     p0_NMDA = 1
     p0_GABA = 1
-    p0_stfAMPA = 1 #I think these ones should be 0.1 
-    p0_stfNMDA = 1
-    p0_stfGABA = 1
+    p0_stfAMPA = p0_stf
+    p0_stfNMDA = p0_stf
+    p0_stfGABA = p0_stf
 
     Vthre = -50
     
@@ -49,11 +49,11 @@ def Prerelease(x0,pre,nNeurons,neq,rk45_TOL,fD_AMPA,fD_NMDA,fD_GABA,fF_AMPA,fF_N
     pRel_stfGABA = p0_stfGABA*(1-factor_stfGABA)+pRel_stfGABA*factor_stfGABA
 
 
-    #--------------------update pRel if the neuron elicits a spike---------------------      
+    #--------------------update pRel if the neuron elicits a spike---------------------     
         
     #vector 1xnNeurons that in each position contains True/False indicating wheather the neurons fires a spike or not     
     compare = (pre[indexvspyramneuron]<Vthre)*(x0[indexvspyramneuron]>Vthre)*(1-ExcInh)+(pre[indexvinterneuron]<Vthre)*(x0[indexvinterneuron]>Vthre)*(ExcInh)
-        
+      
     #updating the vector of pRelAMPA for depression (fD) <--> pyramidal_neurons only
     pRelAMPA = pRelAMPA*fD_AMPA*compare*(1-ExcInh)+pRelAMPA*(compare*ExcInh+(1-compare))
         
@@ -72,5 +72,4 @@ def Prerelease(x0,pre,nNeurons,neq,rk45_TOL,fD_AMPA,fD_NMDA,fD_GABA,fF_AMPA,fF_N
     #updating the vector of pRelGABA for facilitation (fD) <--> interneurons only
     pRel_stfGABA = (pRel_stfGABA + (1-pRel_stfGABA)*fF_GABA)*compare*ExcInh+pRel_stfGABA*(compare*(1-ExcInh)+(1-compare))
 
-    
     return pRelAMPA, pRelNMDA, pRelGABA, pRel_stfAMPA, pRel_stfNMDA, pRel_stfGABA

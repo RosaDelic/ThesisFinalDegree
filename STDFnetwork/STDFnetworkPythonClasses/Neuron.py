@@ -5,7 +5,15 @@ import numba as nb
 from numba.types import unicode_type
 from numba import jit
 import numpy as np
+#from numba.experimental import jitclass
 
+#specification of the types of each attribute
+#spec = [
+#    ('__name', nb.types.unicode_type),
+#    ('__type', nb.types.unicode_type),
+#       ]
+
+#@jitclass(spec)
 class Neuron(object):
     
     #InstanceInputs:

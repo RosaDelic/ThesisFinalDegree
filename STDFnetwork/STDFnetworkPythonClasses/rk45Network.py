@@ -44,14 +44,14 @@ def rk45Network(RHS, t0, tf, x0, N, h, neq, nNeurons, nvar, P, ExcInh, fD_AMPA, 
     #------------------------------------ Initial values to rk45 Outputs  -------------------------
     #initialize time vector (ti), system solution vector (wi), all probability of Release vectors (pRelAMPA, pRelNMDA, pRelGABA, pRel_stfAMPA, pRel_stfNMDA, pRel_stfGABA)
     
-    ti=np.empty(N+1)
-    wi = np.empty((nvar,N+1))
-    pRelAMPA = np.empty((nNeurons,N+1))
-    pRelNMDA = np.empty((nNeurons,N+1))
-    pRelGABA = np.empty((nNeurons,N+1))
-    pRel_stfAMPA = np.empty((nNeurons,N+1))
-    pRel_stfNMDA = np.empty((nNeurons,N+1))
-    pRel_stfGABA = np.empty((nNeurons,N+1))
+    ti=np.empty(N)
+    wi = np.empty((nvar,N))
+    pRelAMPA = np.empty((nNeurons,N))
+    pRelNMDA = np.empty((nNeurons,N))
+    pRelGABA = np.empty((nNeurons,N))
+    pRel_stfAMPA = np.empty((nNeurons,N))
+    pRel_stfNMDA = np.empty((nNeurons,N))
+    pRel_stfGABA = np.empty((nNeurons,N))
 
     #save initial conditions in the vectors
     ti[0] = t0
@@ -61,13 +61,14 @@ def rk45Network(RHS, t0, tf, x0, N, h, neq, nNeurons, nvar, P, ExcInh, fD_AMPA, 
     #---------------------------------  Loop to integrate the system ----------------------------------
 
     i = 1
+    t0 = h
     
     while(t0+h < tf):
-        if i%100 == 0:
+        if i%1000 == 0:
             print('Actual i: ', i)
 
         #-------------------------  RK45-Field integrator -----------------------------
-        pre = x0
+        pre = x0;
         k1 = h * RHS(t0, x0, neq, nNeurons, nvar, synaptic_params, Pyramneuron, Interneuron, Synapsis, ExcInh, randomvL, randomgL, randomgsd)
         k2 = h * RHS(t0 + h/2, x0 + k1/2, neq, nNeurons, nvar, synaptic_params, Pyramneuron, Interneuron, Synapsis, ExcInh, randomvL, randomgL, randomgsd)
         k3 = h * RHS(t0 + h/2, x0 + k2/2, neq, nNeurons, nvar, synaptic_params, Pyramneuron, Interneuron, Synapsis, ExcInh, randomvL, randomgL, randomgsd)
@@ -82,8 +83,4 @@ def rk45Network(RHS, t0, tf, x0, N, h, neq, nNeurons, nvar, P, ExcInh, fD_AMPA, 
         
         i = i + 1
         
-    return ti, wi, pRelAMPA, pRelNMDA, pRelGABA, pRel_stfAMPA, pRel_stfNMDA, pRel_stfGABA 
-
-
-#def save_variables(wi,pRelAMPA,pRelNMDA,pRelGABA,pRel_stfAMPA,pRel_stfNMDA,pRel_stfGABA):
-    
+    return ti, wi, pRelAMPA, pRelNMDA, pRelGABA, pRel_stfAMPA, pRel_stfNMDA, pRel_stfGABA    

@@ -93,16 +93,6 @@ class SynapticConn():
             #public method: called at the beginning of each NetworkField, takes the synaptic variables for the current evaluation of x0
             #x0: 1xself.__neq*self.__nNeurons vector containing the variables of the network field
 
-            #synaptic variables in pyramidal neurons (AMPA, NMDA, GABA)
-            #sAMPA = np.empty(self.__nNeurons)
-            #sNMDA = np.empty(self.__nNeurons)
-            #sGABA = np.empty(self.__nNeurons) #this one should be zero, the excitatory neurons do not release GABA inhibitory neurotransmiters
-
-            #synaptic variables in interneurons (AMPA, NMDA, GABA)
-            #synAMPA = np.empty(self.__nNeurons)
-            #synNMDA = np.empty(self.__nNeurons)
-            #synGABA = np.empty(self.__nNeurons)
-
             #defining vectors of synaptic variables AMPA, NMDA and GABA for pyramidal neurons
             sAMPA = x0[self.__indexAMPA]
             sNMDA = x0[self.__indexNMDA]
@@ -150,7 +140,7 @@ class SynapticConn():
         fact_NMDA = facts_NMDA.sum()
             
         #iterate over all presyn neurons (matrix P by rows) for GABA    
-        facts_GABA = gGABA*sGABA*self.__P[postsyn_neuron, :]*self.__pRelGABA*self.__pRel_stfGABA
+        facts_GABA = gGABA*synGABA*self.__P[postsyn_neuron, :]*self.__pRelGABA*self.__pRel_stfGABA
         
         #sum of factors of all presynaptic neurons GABA contributions
         fact_GABA = facts_GABA.sum()

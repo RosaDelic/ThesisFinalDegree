@@ -1,5 +1,5 @@
-def NetworkSTDall(Dnumber, Fnumber, t0, tf, h):
-    #-----------------Inputs-----------------:
+def NetworkSTDall(Dnumber, Fnumber, t0, tf, h, p0_stf):
+    #=========================================================  Inputs  ============================================================
     #Dnumber: Depression factor
     #Fnubmer: Facilitation factor
     #t0: Initial time
@@ -25,9 +25,8 @@ def NetworkSTDall(Dnumber, Fnumber, t0, tf, h):
     import matplotlib.pyplot as plt
     from NetworkField import NetworkField
     from rk45Network import rk45Network
-    from SDNumber import SDNumber
-    
-    start = time.time()
+    from Tools import SDNumber
+
 
     print('--------------------------  STD - NETWORK  ---------------------------')
 
@@ -64,11 +63,10 @@ def NetworkSTDall(Dnumber, Fnumber, t0, tf, h):
         #nNeurons: number of neurons in the network
         #neq: number of equations for each neuron in the network
 
-
     fD_AMPA = fD_NMDA = fD_GABA = Dnumber
     fF_AMPA = fF_NMDA = fF_GABA = Fnumber
 
-    N = int((tf-t0)/h)+1
+    N = int((tf-t0)/h)
     nNeurons = ExcInh.size
     neq = 20
     nvar = nNeurons*neq
@@ -92,14 +90,13 @@ def NetworkSTDall(Dnumber, Fnumber, t0, tf, h):
     inhvs_positions = 13+np.arange(nNeurons)*neq
 
 
-    excvs_random = np.random.normal(0,1,len(excvs_positions))
-    excvd_random = np.random.normal(0,1,len(excvd_positions))
-    inhvs_random = np.random.normal(0,1,len(inhvs_positions))
-    
-    #These random numbers no estan ben generats entre [-60,-55]
-    x0[excvs_positions] = (-60+5*excvs_random)*(1-ExcInh)
-    x0[excvd_positions] = (-60+5*excvd_random)*(1-ExcInh)
-    x0[inhvs_positions] = (-60-5*inhvs_random)*ExcInh
+    excvs_random = SDNumber(len(excvs_positions))
+    excvd_random = SDNumber(len(excvd_positions))
+    inhvs_random = SDNumber(len(inhvs_positions))
+
+    x0[excvs_positions] = (-57.5+2.5*excvs_random)*(1-ExcInh)
+    x0[excvd_positions] = (-57.5+2.5*excvd_random)*(1-ExcInh)
+    x0[inhvs_positions] = (-57.5+2.5*inhvs_random)*ExcInh
 
     #4. Define the vectors for random parameters of the neurons
     SDvL = SDNumber(nNeurons)
@@ -111,10 +108,11 @@ def NetworkSTDall(Dnumber, Fnumber, t0, tf, h):
     randomgsd = ((1.75 + 0.1*SDgsd)*0.1)*(1-ExcInh)
 
     #5. Execute rk45 to solve NetworkField
-    
-    [ti, wi, pRelAMPA, pRelNMDA, pRelGABA, pRel_stfAMPA, pRel_stfNMDA, pRel_stfGABA] = rk45Network(NetworkField, t0, tf, x0, N, h, neq, nNeurons, nvar, P, ExcInh, fD_AMPA, fD_NMDA, fD_GABA, fF_AMPA, fF_NMDA, fF_GABA, randomvL, randomgL, randomgsd)
+    start = time.time()
+    [ti, wi, pRelAMPA, pRelNMDA, pRelGABA, pRel_stfAMPA, pRel_stfNMDA, pRel_stfGABA] = rk45Network(NetworkField, t0, tf, x0, N, h, neq, nNeurons, nvar, P, ExcInh, fD_AMPA, fD_NMDA, fD_GABA, fF_AMPA, fF_NMDA, fF_GABA, randomvL, randomgL, randomgsd, p0_stf)
     fin = time.time()
     exec_time = fin-start
+    
 
-    #6. Save the outputs in file: ti, wi, pRelsX, pRels_stfX where X=AMPA, NMDA, GABA
+    #6. Save the outputs in file: exec_time, ti, wi, pRelsX, pRels_stfX where X=AMPA, NMDA, GABA
     np.savez('fD'+str(Dnumber)+'_fF'+str(Fnumber)+'.npz', ti=ti, wi=wi, pRelAMPA=pRelAMPA, pRelNMDA=pRelNMDA, pRelGABA=pRelGABA, pRel_stfAMPA=pRel_stfAMPA, pRel_stfNMDA=pRel_stfNMDA, pRel_stfGABA=pRel_stfGABA, exec_time = exec_time)

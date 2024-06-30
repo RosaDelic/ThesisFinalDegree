@@ -38,11 +38,11 @@ def save_files(wi,pRelAMPA,pRelNMDA,pRelGABA,pRel_stfAMPA,pRel_stfNMDA,pRel_stfG
     with open('prelGABA_matrix.npy', 'wb') as f_prelGABA_matrix:
         np.save(f_prelGABA_matrix,pRelGABA)
     with open('pRel_stfAMPA_matrix.npy', 'wb') as f_pRel_stfAMPA_matrix:
-         np.save(f_pRel_stfAMPA_matrix,pRel_stfAMPA)
+         np.save(f_pRel_stfAMPA_matrix,Rel_stfAMPA)
     with open('pRel_stfNMDA_matrix.npy', 'wb') as f_pRel_stfNMDA_matrix:
-        np.save(f_pRel_stfNMDA_matrix,pRel_stfNMDA)
+        np.save(f_pRel_stfNMDA_matrix,Rel_stfNMDA)
     with open('pRel_stfGABA_matrix.npy', 'wb') as f_pRel_stfGABA_matrix:
-        np.save(f_pRel_stfGABA_matrix,pRel_stfGABA)                           
+        np.save(f_pRel_stfGABA_matrix,Rel_stfGABA)                           
                                     
                                     
                                     
