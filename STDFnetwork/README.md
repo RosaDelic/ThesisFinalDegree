@@ -8,15 +8,15 @@ We provide four implementations of the network:
 
 We consider the first 3 options as efficient enough for the users to execute them. Each of them contains a Main file in which the user can set the following parameters simulation parameters:
 
-    * Dnumber: Depression factor $(f_D)$
+    * Dnumber: Depression factor (f_D)
 
-    * Fnumber: Facilitation factor $(f_F)$
+    * Fnumber: Facilitation factor (f_F)
 
-    * P0_stf: Probability of release for the facilitation $(P_0^{STF})$
+    * P0_stf: Probability of release for the facilitation 
 
-    * t0: Initial time of the simulation. The program expectes 0 to be the initial time $(t_0)$
+    * t0: Initial time of the simulation. The program expectes 0 to be the initial time 
 
-    * tf: Final time of the simulation in ms $(t_f)$.
+    * tf: Final time of the simulation in ms
 
     * h: Discretization step used to integrate the network
 
