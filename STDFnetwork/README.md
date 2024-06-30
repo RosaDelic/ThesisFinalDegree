@@ -2,27 +2,27 @@ Biologically inspired network model simulating V1 cortical activity with Short-T
 
 We provide four implementations of the network:
 
-(1) Using Python with Numba and Functional Programming approach
+(1) Using Python with Numba and Functional Programming approach.
 
-(2) Using Matlab
+(2) Using Matlab.
 
-(3) Using Julia
+(3) Using Julia.
 
-(4) Using Python with Numba and Object Oriented Programming approach
+(4) Using Python with Numba and Object Oriented Programming approach.
 
 We consider the first 3 options as efficient enough for the users to execute them. Each of them contains a Main file in which the user can set the following parameters simulation parameters:
 
-    * Dnumber: Depression factor (f_D)
+    * Dnumber: Depression factor (f_D).
 
-    * Fnumber: Facilitation factor (f_F)
+    * Fnumber: Facilitation factor (f_F).
 
-    * P0_stf: Probability of release for the facilitation 
+    * P0_stf: Probability of release for the facilitation .
 
-    * t0: Initial time of the simulation. The program expectes 0 to be the initial time 
+    * t0: Initial time of the simulation. The program expectes 0 to be the initial time .
 
-    * tf: Final time of the simulation in ms
+    * tf: Final time of the simulation in ms.
 
-    * h: Discretization step used to integrate the network
+    * h: Discretization step used to integrate the network.
 
 After the simulation is completed, a file containig all the simulation results will be saved in the current folder in which the user is working. All implementations contain four distinguished files:
 
