@@ -1,9 +1,13 @@
-Biologically inspired network model of the cortex with Short Term Depression and Facilitation
+Biologically inspired network model simulating V1 cortical activity with Short-Term Synaptic Depression and Facilitation
 
 We provide four implementations of the network:
+
 (1) Using Python with Numba and Functional Programming approach
+
 (2) Using Matlab
+
 (3) Using Julia
+
 (4) Using Python with Numba and Object Oriented Programming approach
 
 We consider the first 3 options as efficient enough for the users to execute them. Each of them contains a Main file in which the user can set the following parameters simulation parameters:
