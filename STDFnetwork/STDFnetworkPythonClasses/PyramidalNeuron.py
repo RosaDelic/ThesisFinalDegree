@@ -173,7 +173,7 @@ class PyramidalNeuron(Neuron):
 
         dx_neuron[9] = synaptic_params['aAMPA']*self.f_presyn(x[1])-x[9]/synaptic_params['tauAMPA']
         dx_neuron[10] = synaptic_params['aNMDA']*x[11]*(1-x[10])-x[10]/synaptic_params['tauNMDA']
-        dx_neuron[11] = synaptic_params['aX']*self.f_presyn(x[1])-x[11]/synaptic_params['tauX'] #aquí no es correspon el codi amb el paper xNMDAs --> sNMDA
+        dx_neuron[11] = synaptic_params['aX']*self.f_presyn(x[1])-x[11]/synaptic_params['tauX']
         dx_neuron[12] = synaptic_params['aGABA']*self.f_presyn(x[1])-x[12]/synaptic_params['tauGABA']
         
         return dx_neuron

@@ -92,7 +92,7 @@ class Parameters():
         self.__synaptic_params['p0_AMPA'] = 1  #Initial probability of release
         self.__synaptic_params['p0_NMDA'] = 1
         self.__synaptic_params['p0_GABA'] = 1
-        self.__synaptic_params['p0_stfAMPA'] = 0.7 #I think these ones should be 0.1 
+        self.__synaptic_params['p0_stfAMPA'] = 0.7
         self.__synaptic_params['p0_stfNMDA'] = 0.7
         self.__synaptic_params['p0_stfGABA'] = 0.7
         self.__synaptic_params['Vthre'] = -50
