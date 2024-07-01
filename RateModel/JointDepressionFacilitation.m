@@ -53,7 +53,6 @@ ff=0.5;
 
 %--------------------------Depression parameters---------------------------
 %Auxiliar functions for depression steady-states
-%h = @(P0)(((0.25-0.8)/(1-0.1))*(P0-1.4));
 h_e = @(P0)(0.3+exp(-(4*(P0+0.09))));
 h_i = @(P0)(exp(-0.36*P0));
 FDefectiva_e = @(fd,P0)(h_e(P0)+(1-h_e(P0))*exp(10.8*(fd-1))); 
@@ -61,17 +60,6 @@ FDefectiva_i = @(fd,P0)(h_i(P0)+(1-h_i(P0))*exp(10*(fd-1)));
 %Depression steady-state for current combination of fD,P0
 fde = FDefectiva_e(fd,P0)-0.2*(1-ff).*(fd<1);
 fdi = FDefectiva_i(fd,P0)-0.2*(1-ff).*(fd<1);
-
-%h=figure()
-%plot(activ_interval,FDefectiva_e(activ_interval),'LineWidth',4,'Color','r','DisplayName','f_{De}');
-%hold on;
-%plot(activ_interval,FDefectiva_i(activ_interval),'LineWidth',4,'Color','b','DisplayName','f_{Di}');
-%ax = gca; 
-%ax.FontSize = 24;
-%legend('Location','northwest','NumColumns',2);
-%xlabel('Depression factor f_D')
-%ylabel('Effective f_k')
-%hold off;
 
 %Depression activation_function definition (low-pass filter)
 
@@ -104,12 +92,6 @@ hold off;
 %when this threshold is achieved s_Fe,s_Fi will have as steady state P0stf
 thetaFD = @(P0,fD)(min(1,(((-0.4)/(0.9-0.1))*(P0-0.9)+exp(-5*(fD+((0.5)/(0.7-0.1))*P0-0.58)))));
 
-%Theta_fk_factor: Ratio to reduce fF to achieve silent state at the bifurcation point fF^* for facilitation
-%thetaFefectiva = @(fD,fF)(1.*(fF>thetaFD(P0,fd))+(0).*(fF<=thetaFD(P0,fd) | thetaFD(P0,fd)>=1)); %posar thetaFD=0.72 per recuperar independencia de fD
-%theta_fe_factor = thetaFefectiva(fd,ff);
-%theta_fi_factor = thetaFefectiva(fd,ff);
-%FFefectiva_e= @(P0,ff)(0.25*((P0+ff)/2)+0.75);
-
 %Auxiliary functions for facilitation steady-states
 OY_e0 = @(P0)((1-0.72)*P0+0.72);
 OY_e1 = @(P0)((1-0.82)*P0+0.82);
@@ -133,8 +115,6 @@ theta_fe_upper = (max((1/(3))*ff*theta_de,theta_fe_lower)).*(P0>=0.25 & fd<1)+(2
 theta_fi_upper = (max((1/(3))*ff*theta_di,theta_fi_lower)).*(P0>=0.25 & fd<1)+(300).*(P0<0.25 | fd==1);%theta_di-20;%Millor: 400
 %theta_fe_upper = (1/(2))*ff*theta_de;
 %Facilitation activation function definition
-%Gfi = @(x)(((1/theta_fi_lower)*theta_fi_factor*x).*(x<theta_fi_lower)+(1/theta_fi_lower)*theta_fi_factor*theta_fi_lower.*(x>=theta_fi_lower & x<theta_fi_upper)+(-(1/200)*(x-theta_fi_upper)+(1/theta_fi_lower)*theta_fe_factor*theta_fi_lower).*(x>=theta_fi_upper));
-%Gfe = @(x)(((1/theta_fe_lower)*theta_fe_factor*x).*(x<theta_fe_lower)+(1/theta_fe_lower)*theta_fe_factor*theta_fe_lower.*(x>=theta_fe_lower & x<theta_fe_upper)+(-(1/500)*(x-theta_fe_upper)+(1/theta_fe_lower)*theta_fi_factor*theta_fe_lower).*(x>=theta_fe_upper));
 Gfi = @(x)(((1/theta_fi_lower)*x).*(x<theta_fi_lower)+(1/theta_fi_lower)*theta_fi_lower.*(x>=theta_fi_lower & x<theta_fi_upper)+(-(1/150)*(x-theta_fi_upper)+(1/theta_fi_lower)*theta_fi_lower).*(x>=theta_fi_upper));
 Gfe = @(x)(((1/theta_fe_lower)*x).*(x<theta_fe_lower)+(1/theta_fe_lower)*theta_fe_lower.*(x>=theta_fe_lower & x<theta_fe_upper)+(-(1/150)*(x-theta_fe_upper)+(1/theta_fe_lower)*theta_fe_lower).*(x>=theta_fe_upper));
 
@@ -221,13 +201,6 @@ hold off;
 
 
 %-------------Equilibrium points fde--------------
-%h_e = @(P0)(0.3+exp(-(4*(P0+0.09))));
-%h_i = @(P0)(exp(-0.36*P0));
-%FDefectiva_e = @(fd,P0)(h_e(P0)+(1-h_e(P0))*exp(10.8*(fd-1))); 
-%FDefectiva_i = @(fd,P0)(h_i(P0)+(1-h_i(P0))*exp(10*(fd-1)));
-%fde = FDefectiva_e(fd,P0)-0.2*(1-ff).*(fd<1);
-%fdi = FDefectiva_i(fd,P0)-0.2*(1-ff).*(fd<1);
-
 h=figure()
 for i=1:length(P0_vector)
     P0_current = P0_vector(i);

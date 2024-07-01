@@ -58,8 +58,8 @@ def rk45Network(RHS, t0, tf, x0, N, h, neq, nNeurons, nvar, P, ExcInh, fD_AMPA, 
     t0 = h
     
     while(t0+h < tf):
-        if i%1000 == 0:
-            print('Actual i: ', i)
+        #if i%1000 == 0:
+            #print('Actual i: ', i)
 
         #-------------------------  RK45-Field integrator -----------------------------
         pre = x0;

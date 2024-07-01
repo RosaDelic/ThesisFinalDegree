@@ -497,7 +497,7 @@ class TreatNetworkData():
         Inh = np.array(Inh)
         
         #Save info into file
-        np.savez(self.__foldername+'NetworkIFR.npz', ExcIFR = Exc, InhIFR = Inh, firing_rate=firing_rate)  
+        np.savez(self.__foldername+'/NetworkIFR.npz', ExcIFR = Exc, InhIFR = Inh, firing_rate=firing_rate)  
         
         return firing_rate, Exc, Inh
         
@@ -943,6 +943,7 @@ class TreatNetworkData():
         plt.ylabel('Frequency [Hz]')
         plt.xlabel('Time [sec]')
         cbar = plt.colorbar()
+        cbar.ax.set_ylabel('Power (dB)')
         cbar.ax.tick_params(labelsize=20)
         #plt.yscale("log")
         plt.xticks(fontsize=40)
@@ -958,6 +959,7 @@ class TreatNetworkData():
         #plt.pcolormesh(ti, fi, Sxx_i/Sxx_i.max(),norm=LogNorm(10**(-6),min(maxvalue_e,maxvalue_i)),cmap='inferno')
         plt.pcolormesh(ti, fi, PSD_i,cmap='inferno')
         cbar = plt.colorbar()
+        cbar.ax.set_ylabel('Power (dB)')
         cbar.ax.tick_params(labelsize=20)
         #plt.yscale("log")
         plt.xticks(fontsize=40)
@@ -1011,7 +1013,7 @@ class TreatNetworkData():
 
         #Compute the multitaper spectrum
         for neuron in range(self.__nNeurons):
-            print('iter', neuron)
+            #print('iter', neuron)
             #Excitatory neurons
             faxis_exc, S_iter, _ = spectrum.multi_taper_psd(self.__voltage[neuron,:]-np.mean(self.__voltage[neuron,:]), Fs=tol, NW=NW)
             Stotal[neuron,:] = S_iter[0:len(frequency_axis)]
