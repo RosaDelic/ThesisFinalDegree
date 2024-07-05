@@ -37,6 +37,7 @@ After the simulation is completed, a file containig all the simulation results w
 The Matlab and Julia implementations have no specific requirements other than having a Matlab licence and being able to install the integrated development environments to work with. 
 
 Regarding the Python implementation, an environment with the following requirements needs to be created and used to run the network code:
+    
     * Numpy: version 1.24.3
 
     * Pandas: version 2.0.3
