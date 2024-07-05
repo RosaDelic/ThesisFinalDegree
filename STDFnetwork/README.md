@@ -33,3 +33,18 @@ After the simulation is completed, a file containig all the simulation results w
     (3) NetworkField: Method used to compute the vector field defined by the network at the next time step from values in the previous time step which are passed as parameters.
     
     (4) Prerelease: Parameters involved in the probability of release equations are initialized. The probability of release of each neuron is computed and updated according with their activity.
+
+The Matlab and Julia implementations have no specific requirements other than having a Matlab licence and being able to install the integrated development environments to work with. 
+
+Regarding the Python implementation, an environment with the following requirements needs to be created and used to run the network code:
+    * Numpy: version 1.24.3
+
+    * Pandas: version 2.0.3
+
+    * Matplotlib: version 3.7.2
+
+    * Seaborn: version 0.13.0
+
+    * Numba: version 0.57.1
+
+    * Nitime: version 0.10.2

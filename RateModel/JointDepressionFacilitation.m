@@ -23,7 +23,7 @@ wii = 0.5;
 
 %Provisional values
 tau_e = 150;
-tau_i = 320;%320
+tau_i = 320;
 tau_ae = 1500;
 tau_ai = 500;
 tau_sde = 250; 
@@ -64,10 +64,8 @@ fdi = FDefectiva_i(fd,P0)-0.2*(1-ff).*(fd<1);
 %Depression activation_function definition (low-pass filter)
 
 %Depression threshold
-theta_de = (fde)*150;%+250*(1-P0); 
-theta_di = (fdi)*65;%+250*(1-P0); 
-%theta_de = 60;
-%theta_di = 50;
+theta_de = (fde)*150;
+theta_di = (fdi)*65; 
 
 Gde = @(x)(0.*(x<(theta_de-10))+(1/20)*(x-(theta_de-10)).*(x>=(theta_de-10) & x<(theta_de+10))+1.*(x>=(theta_de+10)));
 Gdi = @(x)(0.*(x<(theta_di-10))+(1/20)*(x-(theta_di-10)).*(x>=(theta_di-10) & x<(theta_di+10))+1.*(x>=(theta_di+10)));
@@ -98,7 +96,6 @@ OY_e1 = @(P0)((1-0.82)*P0+0.82);
 FFefectiva_e= @(P0,ff)((OY_e1(P0)-OY_e0(P0))*ff+OY_e0(P0));
 OY_i = @(P0)(-0.15*P0+0.15);
 FFefectiva_i = @(P0,ff)(P0+OY_i(P0)*ff);
-%FFefectiva_i= @(P0,ff)(P0+0.15*ff).*(P0<0.85)+1.*(P0>=0.85);
 %Facilitation steady-state for current combination of fF,P0
 ffi = (FFefectiva_i(P0,ff)).*(ff>thetaFD(P0,fd))+P0.*(ff<=thetaFD(P0,fd));
 ffe = (FFefectiva_e(P0,ff)).*(ff>thetaFD(P0,fd))+P0.*(ff<=thetaFD(P0,fd));
@@ -108,12 +105,11 @@ ffe = (FFefectiva_e(P0,ff)).*(ff>thetaFD(P0,fd))+P0.*(ff<=thetaFD(P0,fd));
 
 %Threshold definition
 %Theta_fk_lower: Lower threshold for facilitation
-theta_fe_lower = 2;%/ff;%3.25;%Facilitation only: 3.25;
+theta_fe_lower = 2;
 theta_fi_lower = 5;
 %Theta_fk_upper: Higher threshold for facilitation
-theta_fe_upper = (max((1/(3))*ff*theta_de,theta_fe_lower)).*(P0>=0.25 & fd<1)+(200).*(P0<0.25 | fd==1);%theta_de-20;%Millor: 400
-theta_fi_upper = (max((1/(3))*ff*theta_di,theta_fi_lower)).*(P0>=0.25 & fd<1)+(300).*(P0<0.25 | fd==1);%theta_di-20;%Millor: 400
-%theta_fe_upper = (1/(2))*ff*theta_de;
+theta_fe_upper = (max((1/(3))*ff*theta_de,theta_fe_lower)).*(P0>=0.25 & fd<1)+(200).*(P0<0.25 | fd==1);
+theta_fi_upper = (max((1/(3))*ff*theta_di,theta_fi_lower)).*(P0>=0.25 & fd<1)+(300).*(P0<0.25 | fd==1);
 %Facilitation activation function definition
 Gfi = @(x)(((1/theta_fi_lower)*x).*(x<theta_fi_lower)+(1/theta_fi_lower)*theta_fi_lower.*(x>=theta_fi_lower & x<theta_fi_upper)+(-(1/150)*(x-theta_fi_upper)+(1/theta_fi_lower)*theta_fi_lower).*(x>=theta_fi_upper));
 Gfe = @(x)(((1/theta_fe_lower)*x).*(x<theta_fe_lower)+(1/theta_fe_lower)*theta_fe_lower.*(x>=theta_fe_lower & x<theta_fe_upper)+(-(1/150)*(x-theta_fe_upper)+(1/theta_fe_lower)*theta_fe_lower).*(x>=theta_fe_upper));
